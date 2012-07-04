@@ -27,9 +27,10 @@ package
 		 */
 		public static const WINDOW_HEIGHT:int = 240;
 		
-		public static const UP:int = 0;
-		public static const LEFT:int = 1;
-		public static const RIGHT:int = 2;
-		public static const DOWN:int = 3;
+		public static const NONE:int = 0;
+		public static const UP:int = 1;
+		public static const LEFT:int = 2;
+		public static const RIGHT:int = 3;
+		public static const DOWN:int = 4;
 	}
 }

@@ -17,9 +17,8 @@ package
 		public var cameraRoomX:int = 0;
 		public var cameraRoomY:int = 0;
 		
-		public var cameraMoveDirection:int = FlxG
-		
 		public var cameraTransition:Boolean = false;
+		public var cameraScrollSpeed:int = 2;
 
 		override public function create():void
 		{
@@ -28,14 +27,16 @@ package
 			add(tileset);
 			add(megaman);
 			
-			megaman.x = Game.WINDOW_WIDTH - 30;
+			megaman.x = Game.WINDOW_WIDTH / 2;
 			
-			FlxG.watch(this, 'cameraEventualX', 'eventx');
-			FlxG.watch(this, 'cameraEventualY', 'eventy');
-			FlxG.watch(FlxG.camera, 'x', 'camx');
-			FlxG.watch(FlxG.camera, 'y', 'camy');
-			FlxG.watch(megaman, 'x');
-			FlxG.watch(megaman, 'y');
+			FlxG.camera.setBounds(0, 0, tileset.width, tileset.height);
+			
+			FlxG.watch(this, 'megaRoomX');
+			FlxG.watch(this, 'megaRoomY');
+			FlxG.watch(FlxG.camera.scroll, 'x', 'camX');
+			FlxG.watch(FlxG.camera.scroll, 'y', 'camY');
+			FlxG.watch(this, 'cameraRoomX');
+			FlxG.watch(this, 'cameraRoomY');
 		}
 
 		override public function update():void
@@ -47,17 +48,19 @@ package
 		}
 
 		/**
-		 * Set the next camera coords to the middle of the next room.
+		 * Set the next camera coords to the top left of the next room.
 		 * @param	x
 		 * @param	y
 		 */
-		protected function setCameraRoom(x:int, y:int):void
+		protected function setCameraRoom(x:int, y:int, forceTransition:Boolean = true):void
 		{
 			if ( x < 0 || y < 0 )
 			{
-				megaman.active = true;
+				cameraTransition = false;
 				return;
 			}
+			
+			trace(x, y);
 			
 			var roomX:int = x * Game.WINDOW_WIDTH;
 			var roomY:int = y * Game.WINDOW_HEIGHT;
@@ -67,6 +70,11 @@ package
 			
 			cameraEventualX = roomX;
 			cameraEventualY = roomY;
+			
+			if ( forceTransition )
+			{
+				cameraTransition = true;
+			}
 		}
 		
 		/**
@@ -74,32 +82,29 @@ package
 		 */
 		protected function updateMegamanRoomCoords():void
 		{
-			megaRoomX = megaman.x - FlxG.camera.x;
-			megaRoomY = megaman.y - FlxG.camera.y;
+			megaRoomX = megaman.x - FlxG.camera.scroll.x;
+			megaRoomY = megaman.y - FlxG.camera.scroll.y;
 		}
 
 		protected function updateCamera():void
 		{
 			if ( !cameraTransition )
 			{
+				megaman.active = true;
 				if( megaRoomX > Game.WINDOW_WIDTH )
 				{
-					cameraTransition = true;
 					setCameraRoom(cameraRoomX + 1, cameraRoomY);
 				}
 				if( megaRoomX < 0 )
 				{
-					cameraTransition = true;
 					setCameraRoom(cameraRoomX - 1, cameraRoomY);
 				}
 				if( megaRoomY > Game.WINDOW_HEIGHT )
 				{
-					cameraTransition = true;
 					setCameraRoom(cameraRoomX, cameraRoomY + 1);
 				}
 				if( megaRoomY < 0 )
 				{
-					cameraTransition = true;
 					setCameraRoom(cameraRoomX, cameraRoomY - 1);
 				}
 			}
@@ -107,20 +112,24 @@ package
 			{
 				megaman.active = false;
 				
-				if(cameraEventualX != Math.abs(FlxG.camera.x) || cameraEventualY != Math.abs(FlxG.camera.y))
+				if(cameraEventualX != FlxG.camera.scroll.x || cameraEventualY != FlxG.camera.scroll.y)
 				{
-					var diffX:int = cameraEventualX - FlxG.camera.x;
-					var diffY:int = cameraEventualY - FlxG.camera.y;
+					var diffX:int = cameraEventualX - FlxG.camera.scroll.x;
+					var diffY:int = cameraEventualY - FlxG.camera.scroll.y;
 					
 					var mag:Number = Math.sqrt((diffX * diffX) + (diffY * diffY));
 					
-					var unitX:Number = diffX / mag;
-					var unitY:Number = diffY / mag;
-					
-					FlxG.camera.scroll.make(FlxG.camera.x - unitX, FlxG.camera.y - unitY);
-					
-					megaman.x -= unitX;
-					megaman.y -= unitY;
+					var unitX:Number = 0;
+					var unitY:Number = 0;
+					if ( mag > 0 )
+					{
+						unitX = diffX / mag;
+						unitY = diffY / mag;
+					}
+					// add speed
+					unitX = unitX * cameraScrollSpeed;
+					unitY = unitY * cameraScrollSpeed;
+					FlxG.camera.scroll.make(FlxG.camera.scroll.x + unitX, FlxG.camera.scroll.y + unitY);
 				}
 				else
 				{
