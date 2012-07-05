@@ -30,13 +30,6 @@ package
 			megaman.x = Game.WINDOW_WIDTH / 2;
 			
 			FlxG.camera.setBounds(0, 0, tileset.width, tileset.height);
-			
-			FlxG.watch(this, 'megaRoomX');
-			FlxG.watch(this, 'megaRoomY');
-			FlxG.watch(FlxG.camera.scroll, 'x', 'camX');
-			FlxG.watch(FlxG.camera.scroll, 'y', 'camY');
-			FlxG.watch(this, 'cameraRoomX');
-			FlxG.watch(this, 'cameraRoomY');
 		}
 
 		override public function update():void
