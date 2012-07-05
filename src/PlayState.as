@@ -55,7 +55,7 @@ package
 			if ( FlxG.keys.justPressed('R') )
 			{
 				megaman.x = map.playerStart.x;
-				megaman.y = map.playerStart.y - 64;
+				megaman.y = map.playerStart.y;
 			}
 			
 			updateCamera();

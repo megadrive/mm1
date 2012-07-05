@@ -75,6 +75,19 @@
         <Y>1</Y>
       </ScrollFactor>
     </LayerDefinition>
+    <LayerDefinition xsi:type="GridLayerDefinition">
+      <Name>Death</Name>
+      <Grid>
+        <Width>16</Width>
+        <Height>16</Height>
+      </Grid>
+      <ScrollFactor>
+        <X>1</X>
+        <Y>1</Y>
+      </ScrollFactor>
+      <Color A="255" R="255" G="0" B="0" />
+      <ExportMode>Bitstring</ExportMode>
+    </LayerDefinition>
   </LayerDefinitions>
   <Tilesets>
     <Tileset>

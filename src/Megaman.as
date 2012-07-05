@@ -73,8 +73,8 @@ package
 		public function Megaman()
 		{
 			loadGraphic(Game.SPRITE_MEGAMAN, false, false, 24, 24, true);
-			width = 16; height = 20;
-			this.offset = new FlxPoint(5, 4);
+			width = 16; height = 16;
+			this.offset = new FlxPoint(5, 8);
 			
 			_autoFallPos = new FlxPoint(width / 2, height + 1);
 			_autoFall = new FlxObject(0, 0, 1, 1);
@@ -96,7 +96,7 @@ package
 				_jumpHeight = 0;
 			}
 			
-			if( onGround && FlxG.keys.pressed('Z') )
+			if( onGround && FlxG.keys.justPressed('UP') )
 			{
 				velocity.y = (gravity * -_maxJumpHeight) * FlxG.elapsed;
 				onGround = false;
