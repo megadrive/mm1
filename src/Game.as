@@ -9,8 +9,8 @@ package
 		/**
 		 * Cutman's stage.
 		 */
-		[Embed(source = "../assets/cutman.png")] static public const GFX_CUTMAN:Class;
-		[Embed(source = "../assets/debug.png")] static public const GFX_DEBUG:Class;
+		[Embed(source = "../assets/cutmanTileset.png")] static public const GFX_CUTMAN:Class;
+		[Embed(source = "../assets/cutman.oel", mimeType = "application/octet-stream")] static public const LVL_CUTMAN:Class;
 		
 		/**
 		 * Megaman's sprite.

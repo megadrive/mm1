@@ -14,8 +14,9 @@ package
 		public function Megaman()
 		{
 			loadGraphic(Game.SPRITE_MEGAMAN, false, false, 24, 24, true);
+			width = 16; height = 16;
 			
-			this.offset = new FlxPoint(width / 2, height / 2);
+			this.offset = new FlxPoint(5, 8);
 		}
 		
 		override public function update():void

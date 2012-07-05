@@ -6,7 +6,6 @@ package
 	public class PlayState extends FlxState
 	{
 		public var megaman:Megaman = new Megaman();
-		public var tileset:FlxSprite = new FlxSprite(0, 0, Game.GFX_DEBUG);
 		
 		public var megaRoomX:int = 0;
 		public var megaRoomY:int = 0;
@@ -19,22 +18,31 @@ package
 		
 		public var cameraTransition:Boolean = false;
 		public var cameraScrollSpeed:int = 2;
+		
+		public var map:Map = new Map();
+		
+		private var text:FlxText = new FlxText(2, 2, FlxG.width - 2);
 
 		override public function create():void
 		{
 			super.create();
-
-			add(tileset);
+			
+			map.loadLevel(Game.LVL_CUTMAN, Game.GFX_CUTMAN);
+			add(map);
 			add(megaman);
 			
-			megaman.x = Game.WINDOW_WIDTH / 2;
+			megaman.x = map.playerStart.x;
+			megaman.y = map.playerStart.y;
 			
-			FlxG.camera.setBounds(0, 0, tileset.width, tileset.height);
+			/* debug */
+			add(text);
 		}
 
 		override public function update():void
 		{
 			super.update();
+			
+			FlxG.collide(megaman, map.collision);
 			
 			updateCamera();
 			updateMegamanRoomCoords();
@@ -45,15 +53,13 @@ package
 		 * @param	x
 		 * @param	y
 		 */
-		protected function setCameraRoom(x:int, y:int, forceTransition:Boolean = true):void
+		protected function setCameraRoom(x:int, y:int, forceTransition:Boolean = true, snapTo:Boolean = false):void
 		{
 			if ( x < 0 || y < 0 )
 			{
 				cameraTransition = false;
 				return;
 			}
-			
-			trace(x, y);
 			
 			var roomX:int = x * Game.WINDOW_WIDTH;
 			var roomY:int = y * Game.WINDOW_HEIGHT;
@@ -81,57 +87,66 @@ package
 
 		protected function updateCamera():void
 		{
-			if ( !cameraTransition )
+			if( megaRoomX + 16 < FlxG.camera.bounds.width && megaRoomY + 16 < FlxG.camera.bounds.height )
 			{
-				megaman.active = true;
-				if( megaRoomX > Game.WINDOW_WIDTH )
+				if ( !cameraTransition )
 				{
-					setCameraRoom(cameraRoomX + 1, cameraRoomY);
-				}
-				if( megaRoomX < 0 )
-				{
-					setCameraRoom(cameraRoomX - 1, cameraRoomY);
-				}
-				if( megaRoomY > Game.WINDOW_HEIGHT )
-				{
-					setCameraRoom(cameraRoomX, cameraRoomY + 1);
-				}
-				if( megaRoomY < 0 )
-				{
-					setCameraRoom(cameraRoomX, cameraRoomY - 1);
-				}
-			}
-			else
-			{
-				megaman.active = false;
-				
-				if(cameraEventualX != FlxG.camera.scroll.x || cameraEventualY != FlxG.camera.scroll.y)
-				{
-					var diffX:int = cameraEventualX - FlxG.camera.scroll.x;
-					var diffY:int = cameraEventualY - FlxG.camera.scroll.y;
-					
-					var mag:Number = Math.sqrt((diffX * diffX) + (diffY * diffY));
-					
-					var unitX:Number = 0;
-					var unitY:Number = 0;
-					if ( mag > 0 )
+					megaman.active = true;
+					if( megaRoomX > Game.WINDOW_WIDTH )
 					{
-						unitX = diffX / mag;
-						unitY = diffY / mag;
+						setCameraRoom(cameraRoomX + 1, cameraRoomY);
 					}
-					// add speed
-					unitX = unitX * cameraScrollSpeed;
-					unitY = unitY * cameraScrollSpeed;
-					FlxG.camera.scroll.make(FlxG.camera.scroll.x + unitX, FlxG.camera.scroll.y + unitY);
+					if( megaRoomX < 0 )
+					{
+						setCameraRoom(cameraRoomX - 1, cameraRoomY);
+					}
+					if( megaRoomY > Game.WINDOW_HEIGHT )
+					{
+						setCameraRoom(cameraRoomX, cameraRoomY + 1);
+					}
+					if( megaRoomY < 0 )
+					{
+						setCameraRoom(cameraRoomX, cameraRoomY - 1);
+					}
 				}
 				else
 				{
-					megaman.active = true;
-					cameraTransition = false;
+					megaman.active = false;
+					
+					if(cameraEventualX != FlxG.camera.scroll.x || cameraEventualY != FlxG.camera.scroll.y)
+					{
+						var diffX:int = cameraEventualX - FlxG.camera.scroll.x;
+						var diffY:int = cameraEventualY - FlxG.camera.scroll.y;
+						
+						var mag:Number = Math.sqrt((diffX * diffX) + (diffY * diffY));
+						
+						var unitX:Number = 0;
+						var unitY:Number = 0;
+						if ( mag > 0 )
+						{
+							unitX = diffX / mag;
+							unitY = diffY / mag;
+						}
+						// add speed
+						unitX = unitX * cameraScrollSpeed;
+						unitY = unitY * cameraScrollSpeed;
+						FlxG.camera.scroll.make(FlxG.camera.scroll.x + unitX, FlxG.camera.scroll.y + unitY);
+					}
+					else
+					{
+						megaman.active = true;
+						cameraTransition = false;
+					}
 				}
 			}
 			
 			FlxG.camera.update();
+			
+			// update world bounds so collisions only happen on this screen
+			FlxG.worldBounds.x = FlxG.camera.scroll.x;
+			FlxG.worldBounds.y = FlxG.camera.scroll.y;
+			FlxG.worldBounds.width = FlxG.camera.scroll.x + FlxG.width;
+			FlxG.worldBounds.height = FlxG.camera.scroll.y + FlxG.height;
 		}
 	}
 }

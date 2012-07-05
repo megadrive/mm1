@@ -5,16 +5,16 @@
   <BackgroundColor A="255" R="125" G="160" B="255" />
   <GridColor A="255" R="255" G="240" B="90" />
   <LevelDefaultSize>
-    <Width>13</Width>
-    <Height>9</Height>
+    <Width>256</Width>
+    <Height>240</Height>
   </LevelDefaultSize>
   <LevelMinimumSize>
-    <Width>1</Width>
-    <Height>1</Height>
+    <Width>256</Width>
+    <Height>240</Height>
   </LevelMinimumSize>
   <LevelMaximumSize>
-    <Width>20</Width>
-    <Height>20</Height>
+    <Width>2560</Width>
+    <Height>2400</Height>
   </LevelMaximumSize>
   <Filename>C:\Users\Andrew\dev\mm1\assets\mm1.oep</Filename>
   <AngleMode>Radians</AngleMode>
@@ -51,17 +51,57 @@
       </ScrollFactor>
       <ExportMode>CSV</ExportMode>
     </LayerDefinition>
+    <LayerDefinition xsi:type="GridLayerDefinition">
+      <Name>Ladder</Name>
+      <Grid>
+        <Width>16</Width>
+        <Height>16</Height>
+      </Grid>
+      <ScrollFactor>
+        <X>1</X>
+        <Y>1</Y>
+      </ScrollFactor>
+      <Color A="255" R="0" G="0" B="0" />
+      <ExportMode>Bitstring</ExportMode>
+    </LayerDefinition>
+    <LayerDefinition xsi:type="EntityLayerDefinition">
+      <Name>MegamanStart</Name>
+      <Grid>
+        <Width>16</Width>
+        <Height>16</Height>
+      </Grid>
+      <ScrollFactor>
+        <X>1</X>
+        <Y>1</Y>
+      </ScrollFactor>
+    </LayerDefinition>
   </LayerDefinitions>
   <Tilesets>
     <Tileset>
-      <Name>cutman</Name>
-      <FilePath>cutman.png</FilePath>
+      <Name>cutmanTileset</Name>
+      <FilePath>cutmanTileset.png</FilePath>
       <TileSize>
-        <Width>256</Width>
-        <Height>240</Height>
+        <Width>16</Width>
+        <Height>16</Height>
       </TileSize>
       <TileSep>0</TileSep>
     </Tileset>
   </Tilesets>
-  <EntityDefinitions />
+  <EntityDefinitions>
+    <EntityDefinition Name="MegamanStart" Limit="1" ResizableX="false" ResizableY="false" Rotatable="false" RotateIncrement="15">
+      <Size>
+        <Width>16</Width>
+        <Height>16</Height>
+      </Size>
+      <Origin>
+        <X>0</X>
+        <Y>0</Y>
+      </Origin>
+      <ImageDefinition DrawMode="Rectangle" ImagePath="megaman.png" Tiled="false">
+        <RectColor A="255" R="255" G="0" B="0" />
+      </ImageDefinition>
+      <ValueDefinitions />
+      <NodesDefinition Enabled="false" Limit="-1" DrawMode="None" Ghost="false" />
+    </EntityDefinition>
+  </EntityDefinitions>
 </project>

@@ -13,5 +13,13 @@ package
 			useSystemCursor = true;
 			showPause = true;
 		}
+		
+		/**
+		 * debug
+		 */
+		public static var __debugLevel:uint = OFF;
+		public static const OFF:int = 0;
+		public static const PLAYER:int = 1;
+		// add more as needed
 	}
 }
