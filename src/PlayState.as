@@ -32,9 +32,17 @@ package
 			add(megaman);
 			
 			megaman.x = map.playerStart.x;
-			megaman.y = map.playerStart.y;
+			megaman.y = map.playerStart.y - 64;
+			megaman.mapRef = map;
+			
+			FlxG.bgColor = 0xFF7DA0FF;
 			
 			/* debug */
+			FlxG.watch(megaman, '_jumpHeight');
+			FlxG.watch(megaman, '_maxJumpHeight');
+			
+			/* debug */
+			text.scrollFactor.make(0, 0);
 			add(text);
 		}
 
@@ -43,6 +51,12 @@ package
 			super.update();
 			
 			FlxG.collide(megaman, map.collision);
+			
+			if ( FlxG.keys.justPressed('R') )
+			{
+				megaman.x = map.playerStart.x;
+				megaman.y = map.playerStart.y - 64;
+			}
 			
 			updateCamera();
 			updateMegamanRoomCoords();
@@ -92,19 +106,19 @@ package
 				if ( !cameraTransition )
 				{
 					megaman.active = true;
-					if( megaRoomX > Game.WINDOW_WIDTH )
+					if( megaRoomX + megaman.width / 2 > Game.WINDOW_WIDTH )
 					{
 						setCameraRoom(cameraRoomX + 1, cameraRoomY);
 					}
-					if( megaRoomX < 0 )
+					if( megaRoomX + megaman.width / 2 < 0 )
 					{
 						setCameraRoom(cameraRoomX - 1, cameraRoomY);
 					}
-					if( megaRoomY > Game.WINDOW_HEIGHT )
+					if( megaRoomY + megaman.health / 2 > Game.WINDOW_HEIGHT )
 					{
 						setCameraRoom(cameraRoomX, cameraRoomY + 1);
 					}
-					if( megaRoomY < 0 )
+					if( megaRoomY + megaman.health / 2 < 0 )
 					{
 						setCameraRoom(cameraRoomX, cameraRoomY - 1);
 					}
@@ -112,6 +126,7 @@ package
 				else
 				{
 					megaman.active = false;
+					megaman.velocity.y = 0;
 					
 					if(cameraEventualX != FlxG.camera.scroll.x || cameraEventualY != FlxG.camera.scroll.y)
 					{
@@ -122,7 +137,7 @@ package
 						
 						var unitX:Number = 0;
 						var unitY:Number = 0;
-						if ( mag > 0 )
+						if ( mag > 0 ) // should be greater unless x/y are both 0.
 						{
 							unitX = diffX / mag;
 							unitY = diffY / mag;
