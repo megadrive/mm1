@@ -44,6 +44,9 @@ package
 			/* debug */
 			text.scrollFactor.make(0, 0);
 			add(text);
+			
+			// TODO Revisit this. Unsure if needed. Probably not.
+			add(megaman._autoFallGrp);
 		}
 
 		override public function update():void
@@ -57,6 +60,8 @@ package
 				megaman.x = map.playerStart.x;
 				megaman.y = map.playerStart.y;
 			}
+			
+			text.text = cameraEventualX + ':' + cameraEventualY + ' ' + FlxG.camera.scroll.x+ ':' + FlxG.camera.scroll.y;
 			
 			updateCamera();
 			updateMegamanRoomCoords();
@@ -128,7 +133,10 @@ package
 					megaman.active = false;
 					megaman.velocity.y = 0;
 					
-					if(cameraEventualX != FlxG.camera.scroll.x || cameraEventualY != FlxG.camera.scroll.y)
+					var camDiffX:Number = cameraEventualX - FlxG.camera.scroll.x;
+					var camDiffY:Number = cameraEventualY - FlxG.camera.scroll.y;
+					
+					if(Math.abs(camDiffX) > 1 || Math.abs(camDiffY) > 1)
 					{
 						var diffX:int = cameraEventualX - FlxG.camera.scroll.x;
 						var diffY:int = cameraEventualY - FlxG.camera.scroll.y;
@@ -149,6 +157,16 @@ package
 					}
 					else
 					{
+						// figure out difference, if any then subtract.
+						if( camDiffX != 0 )
+						{
+							FlxG.camera.scroll.x = int(FlxG.camera.scroll.x);
+						}
+						if( camDiffY != 0 )
+						{
+							FlxG.camera.scroll.y = int(FlxG.camera.scroll.y);
+						}
+						
 						megaman.active = true;
 						cameraTransition = false;
 					}

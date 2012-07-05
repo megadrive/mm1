@@ -67,8 +67,10 @@ package
 		 * Internal. Sets off the autofall when Megaman runs off a ledge. Relative to Megaman's pos.
 		 * This gets set behind megaman when he is running, modified based on his movement speed.
 		 */
-		public var _autoFall:FlxObject;
+		public var _autoFallLeft:FlxSprite;
+		public var _autoFallRight:FlxSprite;
 		private var _autoFallPos:FlxPoint;
+		public var _autoFallGrp:FlxGroup = new FlxGroup();
 		
 		public function Megaman()
 		{
@@ -77,13 +79,35 @@ package
 			this.offset = new FlxPoint(5, 8);
 			
 			_autoFallPos = new FlxPoint(width / 2, height + 1);
-			_autoFall = new FlxObject(0, 0, 1, 1);
+		//*
+			_autoFallLeft = new FlxSprite(0, 0);
+			_autoFallLeft.width = 1; _autoFallLeft.height = 1;
+			_autoFallLeft.makeGraphic(1, 1);
+			_autoFallLeft.visible = false;
+		/*/
+			_autoFallLeft = new FlxObject(0, 0, 1, 1);
+			_autoFallRight = new FlxObject(0, 0, 1, 1);
+		/*/
+			_autoFallRight = new FlxSprite(0, 0);
+			_autoFallRight.width = 1; _autoFallRight.height = 1;
+			_autoFallRight.makeGraphic(1, 1);
+			_autoFallRight.visible = false;
+		//*/
+			
+			_autoFallGrp.add(_autoFallLeft);
+			_autoFallGrp.add(_autoFallRight);
 			
 			mapRef = null;
 		}
 		
 		override public function update():void
 		{
+			// TODO This will need revisiting. Not sure this is even needed to be honest.
+			if ( onGround )
+			{
+				velocity.y = 0;
+			}
+			
 			if( !onGround && !onLadder )
 			{
 				velocity.y += gravity * FlxG.elapsed;
@@ -96,7 +120,7 @@ package
 				_jumpHeight = 0;
 			}
 			
-			if( onGround && FlxG.keys.justPressed('UP') )
+			if( onGround && FlxG.keys.justPressed('Z') )
 			{
 				velocity.y = (gravity * -_maxJumpHeight) * FlxG.elapsed;
 				onGround = false;
@@ -120,15 +144,13 @@ package
 			}
 			
 			// Autofall logic
-			_autoFall.x = x + _autoFallPos.x;
-			_autoFall.y = y + _autoFallPos.y;
-			if( !FlxG.overlap(_autoFall, mapRef.collision) )
+			_autoFallLeft.x = x + _autoFallPos.x - 8;
+			_autoFallLeft.y = y + _autoFallPos.y;
+			_autoFallRight.x = x + _autoFallPos.x + 8;
+			_autoFallRight.y = y + _autoFallPos.y;
+			if( !FlxG.overlap(_autoFallGrp, mapRef.collision) && onGround )
 			{
 				onGround = false;
-			}
-			else if ( FlxG.overlap(_autoFall, mapRef.collision) && !onGround )
-			{
-				onGround = true;
 			}
 		}
 	}
