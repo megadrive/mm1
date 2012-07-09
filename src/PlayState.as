@@ -131,7 +131,6 @@ package
 				else
 				{
 					megaman.active = false;
-					megaman.velocity.y = 0;
 					
 					var camDiffX:Number = cameraEventualX - FlxG.camera.scroll.x;
 					var camDiffY:Number = cameraEventualY - FlxG.camera.scroll.y;
